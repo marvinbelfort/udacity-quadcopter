@@ -63,10 +63,13 @@ class Actor:
         # Define input layer (states)
         states = layers.Input(shape=(self.state_size,), name='states')
 
+        multiplier = 2
         # Add hidden layers
-        net = layers.Dense(units=32, activation='relu')(states)
-        net = layers.Dense(units=64, activation='relu')(net)
-        net = layers.Dense(units=32, activation='relu')(net)
+        net = layers.Dense(units=32 * multiplier, activation='relu')(states)
+        #net = layers.BatchNormalization()(net)
+        net = layers.Dense(units=64 * multiplier, activation='relu')(net)
+        #net = layers.BatchNormalization()(net)
+        net = layers.Dense(units=32 * multiplier, activation='relu')(net)
 
         # Try different layer sizes, activations, add batch normalization, regularizers, etc.
 
@@ -123,10 +126,12 @@ class Critic:
 
         # Add hidden layer(s) for state pathway
         net_states = layers.Dense(units=32, activation='relu')(states)
+        #net_states = layers.BatchNormalization()(net_states)
         net_states = layers.Dense(units=64, activation='relu')(net_states)
 
         # Add hidden layer(s) for action pathway
         net_actions = layers.Dense(units=32, activation='relu')(actions)
+        #net_actions = layers.BatchNormalization()(net_actions)
         net_actions = layers.Dense(units=64, activation='relu')(net_actions)
 
         # Try different layer sizes, activations, add batch normalization, regularizers, etc.
