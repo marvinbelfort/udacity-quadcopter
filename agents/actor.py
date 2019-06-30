@@ -22,9 +22,10 @@ class Actor:
         self.action_low = action_low
         self.action_high = action_high
         self.action_range = self.action_high - self.action_low
+
+        # Initialize any other variables here
         self.model = None
         self.train_fn = None
-        # Initialize any other variables here
 
         self.build_model()
 
@@ -35,9 +36,7 @@ class Actor:
 
         # Add hidden layers
         net = layers.Dense(units=32 * multiplier, activation='relu')(states)
-        net = layers.BatchNormalization()(net)
         net = layers.Dense(units=64 * multiplier, activation='relu')(net)
-        net = layers.BatchNormalization()(net)
         net = layers.Dense(units=32 * multiplier, activation='relu')(net)
 
         # Try different layer sizes, activations, add batch normalization, regularizers, etc.
@@ -59,7 +58,8 @@ class Actor:
         # Incorporate any additional losses here (e.g. from regularizers)
 
         # Define optimizer and training function
-        optimizer = optimizers.Adam(lr=.0001)
+        # optimizer = optimizers.Adam(lr=.0001)
+        optimizer = optimizers.Adam()
         updates_op = optimizer.get_updates(params=self.model.trainable_weights, loss=loss)
         self.train_fn = K.function(
 

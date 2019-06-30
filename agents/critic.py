@@ -32,12 +32,10 @@ class Critic:
 
         # Add hidden layer(s) for state pathway
         net_states = layers.Dense(units=32 * multiplier, activation='relu')(states)
-        net_states = layers.BatchNormalization()(net_states)
         net_states = layers.Dense(units=64 * multiplier, activation='relu')(net_states)
 
         # Add hidden layer(s) for action pathway
         net_actions = layers.Dense(units=32 * multiplier, activation='relu')(actions)
-        # net_actions = layers.BatchNormalization()(net_actions)
         net_actions = layers.Dense(units=64 * multiplier, activation='relu')(net_actions)
 
         # Try different layer sizes, activations, add batch normalization, regularizers, etc.
@@ -55,7 +53,7 @@ class Critic:
         self.model = models.Model(inputs=[states, actions], outputs=Q_values)
 
         # Define optimizer and compile model for training with built-in loss function
-        optimizer = optimizers.Adam(lr=0.0001)
+        optimizer = optimizers.Adam()
         self.model.compile(optimizer=optimizer, loss='mse')
 
         # Compute action gradients (derivative of Q values w.r.t. to actions)
