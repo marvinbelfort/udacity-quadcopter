@@ -1,7 +1,7 @@
 from keras import layers, models, optimizers
 from keras import backend as K
 
-multiplier = 10
+multiplier = 1
 
 
 class Actor:
