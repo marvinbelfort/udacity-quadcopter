@@ -6,6 +6,14 @@ from agents.replay_buffer import ReplayBuffer
 from agents.ou_noise import OUNoise
 
 
+model_files = {
+    'al' : "models/actor_local_w.h5",
+    'at' : "models/actor_target_w.h5",
+    'cl' : "models/critic_local_w.h5",
+    'ct' : "models/critic_target_w.h5",
+}
+
+
 class DDPG:
     """Reinforcement Learning agent that learns using DDPG."""
 
@@ -31,19 +39,31 @@ class DDPG:
         # Noise process
         self.exploration_mu = 0
         self.exploration_theta = 0.15
-        self.exploration_sigma = 0.2
+        self.exploration_sigma = 0.25
         self.noise = OUNoise(self.action_size, self.exploration_mu, self.exploration_theta, self.exploration_sigma)
 
         # Replay memory
         self.buffer_size = 100000
-        self.batch_size = 64
+        self.batch_size = 256
         self.memory = ReplayBuffer(self.buffer_size, self.batch_size)
 
         # Algorithm parameters
         self.gamma = 0.99  # discount factor
-        self.tau = 0.01  # for soft update of target parameters
+        self.tau = 0.0001  # for soft update of target parameters
 
         self.last_state = None
+
+    def save_models_weights(self, save_paths=model_files):
+        self.actor_local.model.save_weights(save_paths["al"])
+        self.actor_target.model.save_weights(save_paths["at"])
+        self.critic_local.model.save_weights(save_paths["cl"])
+        self.critic_target.model.save_weights(save_paths["ct"])
+
+    def load_models(self, save_paths=model_files):
+        self.actor_local.model.load_weights(save_paths["al"])
+        self.actor_target.model.load_weights(save_paths["at"])
+        self.critic_local.model.load_weights(save_paths["cl"])
+        self.critic_target.model.load_weights(save_paths["ct"])
 
     def reset_episode(self):
         self.noise.reset()
